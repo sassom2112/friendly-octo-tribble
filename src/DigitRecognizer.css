@@ -1,0 +1,87 @@
+/* src/DigitRecognizer.css */
+
+/* Main container styling */
+.app-container {
+  padding: 40px;
+  background-color: #000000; /* Black background for the entire page */
+  color: #f5f5f5; /* Light text color for contrast */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh; /* Ensure the app takes the full height of the viewport */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Canvas and buttons card styling */
+.action-card {
+  background-color: #1a1a1a; /* Dark card background */
+  border: 1px solid #333; /* Subtle border */
+  border-radius: 8px;
+  padding: 30px;
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Animation for hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Default shadow */
+  overflow: hidden;
+  z-index: 1;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Subtle hover effect with shadow, no change in background color */
+.action-card:hover {
+  transform: translateY(-10px); /* Slight lift on hover */
+  box-shadow: 0px 10px 20px rgba(255, 255, 255, 0.3); /* Adjusted white shadow on hover */
+}
+
+/* Canvas styling */
+.digit-canvas {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: #000000; /* Ensure canvas background is black */
+  margin-bottom: 20px;
+}
+
+/* Buttons container */
+.button-group {
+  display: flex;
+  gap: 20px; /* Space between buttons */
+}
+
+/* Buttons styling */
+.action-button {
+  background-color: #333333; /* Dark button background */
+  color: #f5f5f5; /* Light text color */
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 1rem;
+  text-decoration: none;
+}
+
+/* Hover effect for buttons */
+.action-button:hover {
+  background-color: #555555; /* Lighter background on hover */
+}
+
+/* Prediction text styling */
+.prediction {
+  margin-top: 20px;
+  font-size: 1.5rem;
+  color: #ffffff; /* White color for prediction text */
+  text-align: center;
+}
+
+/* Title Styling */
+.app-title {
+  color: #ffffff; /* White color */
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Optional: Adds a subtle shadow for better readability */
+}
