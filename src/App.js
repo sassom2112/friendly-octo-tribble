@@ -1,12 +1,13 @@
-import React from 'react';
-import './App.css';
+import React, { useState } from 'react';
 import Canvas from './static/canvas';  // Import your Canvas component
 
 function App() {
+  const [prediction, setPrediction] = useState(null);  // Set up state for prediction
+
   return (
     <div className="App">
-      <h1>Welcome to the MNIST Digit Recognition App</h1>
-      <Canvas />  {/* Render your canvas drawing component here */}
+      <Canvas setPrediction={setPrediction} />  {/* Pass setPrediction as a prop */}
+      {prediction !== null && <h2>Prediction: {prediction}</h2>}  {/* Display the prediction */}
     </div>
   );
 }

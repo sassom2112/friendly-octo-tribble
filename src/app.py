@@ -1,63 +1,63 @@
-from flask import Flask, render_template, request, jsonify
-from PIL import Image
+# app.py 
 import torch
 import torch.nn as nn
 import numpy as np
-import io
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 
-# Initialize Flask app
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+CORS(app)
 
-# Import your model architecture
-class SimpleClassifier3Layer(nn.Module):
-    def __init__(self, input_size, hidden_size1, hidden_size2, hidden_size3, num_classes):
-        super(SimpleClassifier3Layer, self).__init__()
-        self.flatten = nn.Flatten()
+# Define the CNN model (same as in mnist.py)
+class CNNClassifier(nn.Module):
+    def __init__(self, num_classes=10):
+        super(CNNClassifier, self).__init__()
         self.layers = nn.Sequential(
-            nn.Linear(input_size, hidden_size1),
+            nn.Conv2d(1, 32, kernel_size=3, padding=1),  # Output: 32 x 28 x 28
+            nn.BatchNorm2d(32),
             nn.ReLU(),
-            nn.Linear(hidden_size1, hidden_size2),
+            nn.MaxPool2d(2),                             # Output: 32 x 14 x 14
+
+            nn.Conv2d(32, 64, kernel_size=3, padding=1), # Output: 64 x 14 x 14
+            nn.BatchNorm2d(64),
             nn.ReLU(),
-            nn.Linear(hidden_size2, hidden_size3),
+            nn.MaxPool2d(2),                             # Output: 64 x 7 x 7
+
+            nn.Flatten(),
+            nn.Linear(64 * 7 * 7, 128),
             nn.ReLU(),
-            nn.Linear(hidden_size3, num_classes)
+            nn.Linear(128, num_classes)
         )
 
     def forward(self, x):
-        x = self.flatten(x)
         return self.layers(x)
 
-# Load the trained model
-input_size = 28 * 28
-hidden_size1 = 64
-hidden_size2 = 64
-hidden_size3 = 64
-num_classes = 10
-model = SimpleClassifier3Layer(input_size, hidden_size1, hidden_size2, hidden_size3, num_classes)
-model.load_state_dict(torch.load("model.pth"))  # Load your trained model
-model.eval()  # Set the model to evaluation mode
-
-@app.route('/')
-def index():
-    return render_template('index.html')
+# Load the trained model weights with weights_only=True
+model = CNNClassifier()
+model.load_state_dict(torch.load('model.pth', map_location=torch.device('cpu'), weights_only=True))
+model.eval()  # Set model to evaluation mode
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    # Get the image data from the POST request
-    file = request.files['image'].read()
-    img = Image.open(io.BytesIO(file)).convert('L')  # Convert to grayscale
-    img = img.resize((28, 28))  # Resize to 28x28 like MNIST
-    img = np.array(img) / 255.0  # Normalize the image
-    img = torch.tensor(img, dtype=torch.float32).unsqueeze(0).unsqueeze(0)  # Add batch and channel dimensions
+    data = request.get_json()
+    pixels = data['pixels']  # Should be a list of 784 pixel values
 
-    # Predict with the model
+    # Convert list to numpy array and reshape to [1, 28, 28]
+    pixels = np.array(pixels, dtype=np.float32).reshape(1, 28, 28)
+
+    # Normalize the pixels (same as during training)
+    pixels = (pixels - 0.5) / 0.5  # Normalize to [-1, 1]
+
+    # Convert to torch tensor and add batch and channel dimensions
+    input_tensor = torch.from_numpy(pixels).unsqueeze(0)  # Shape: [1, 1, 28, 28]
+
+    # Make prediction
     with torch.no_grad():
-        output = model(img)
-        _, predicted = torch.max(output, 1)
+        outputs = model(input_tensor)
+        _, predicted = torch.max(outputs.data, 1)
+        prediction = predicted.item()
 
-    return jsonify({'prediction': int(predicted.item())})
+    return jsonify({'prediction': prediction})
 
 if __name__ == '__main__':
     app.run(debug=True)
