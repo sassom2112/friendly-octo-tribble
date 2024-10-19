@@ -32,18 +32,31 @@ class CNNClassifier(nn.Module):
     def forward(self, x):
         return self.layers(x)
 
-# Load the trained model weights with weights_only=True
+# Instantiate the model
 model = CNNClassifier()
-model.load_state_dict(torch.load('model.pth', map_location=torch.device('cpu'), weights_only=True))
+
+# Load the trained model weights
+try:
+    model.load_state_dict(torch.load('model.pth', map_location=torch.device('cpu')))
+    print("Model loaded successfully.")
+except Exception as e:
+    print(f"Error loading model: {e}")
+
 model.eval()  # Set model to evaluation mode
 
 @app.route('/predict', methods=['POST'])
 def predict():
     data = request.get_json()
-    pixels = data['pixels']  # Should be a list of 784 pixel values
+    pixels = data.get('pixels', None)  # Safely get 'pixels' from JSON
+
+    if pixels is None or not isinstance(pixels, list) or len(pixels) != 784:
+        return jsonify({'error': 'Invalid input data. Expecting a list of 784 pixel values.'}), 400
 
     # Convert list to numpy array and reshape to [1, 28, 28]
-    pixels = np.array(pixels, dtype=np.float32).reshape(1, 28, 28)
+    try:
+        pixels = np.array(pixels, dtype=np.float32).reshape(1, 28, 28)
+    except ValueError:
+        return jsonify({'error': 'Pixel data could not be reshaped to 28x28.'}), 400
 
     # Normalize the pixels (same as during training)
     pixels = (pixels - 0.5) / 0.5  # Normalize to [-1, 1]
@@ -59,5 +72,17 @@ def predict():
 
     return jsonify({'prediction': prediction})
 
-if __name__ == '__main__':
-    app.run(debug=True)
+# Lambda handler
+def lambda_handler(event, context):
+    # Parse the incoming request
+    if event['httpMethod'] == 'POST' and event['path'] == '/predict':
+        return awsgi.response(app, event, context)
+    else:
+        return {
+            'statusCode': 404,
+            'body': 'Not Found'
+        }
+
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=5000, debug=True)
