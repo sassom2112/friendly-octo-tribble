@@ -1,70 +1,53 @@
-# Getting Started with Create React App
+# MNIST Handwritten Digit Recognition App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview
 
-## Available Scripts
+This app is a simple yet powerful demonstration of using a **Convolutional Neural Network (CNN)** to recognize handwritten digits (0-9) from the **MNIST dataset**. The app allows users to draw digits on a canvas and then uses a deep learning model hosted on a Flask back-end to classify the drawn digit with a high level of accuracy.
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+- **User Interface (Front-End)**: A simple drawing interface built with **React.js** allows users to draw a digit (0-9).
+- **Back-End**: A **Flask API** takes the user's drawing, processes the image, and runs it through a pre-trained **CNN** model for classification.
+- **Machine Learning**: The app leverages a **Convolutional Neural Network** (CNN) trained on the MNIST dataset using **PyTorch** to classify the input digits.
+- **Real-Time Inference**: The Flask API provides real-time inference by returning the predicted digit to the user almost instantly.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## How It Works
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+1. The user draws a digit on a canvas using the front-end interface.
+2. The drawing is sent as an image to the Flask API hosted on the back end.
+3. The image is preprocessed (converted to grayscale, resized to 28x28 pixels).
+4. The preprocessed image is passed to the CNN model for classification.
+5. The predicted digit is returned to the front-end and displayed to the user.
 
-### `npm test`
+## Technology Stack
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **Front-End**: React.js, JavaScript, HTML, CSS
+- **Back-End**: Flask, Python
+- **Machine Learning**: PyTorch, CNN model
+- **Cloud & Containerization**: Docker, AWS (Lambda, API Gateway, S3, CloudFront)
+  
+## Lessons Learned
 
-### `npm run build`
+### 1. **Building a Full Stack ML Application**
+   Developing this app allowed me to gain hands-on experience in integrating machine learning with web development. I learned how to serve a machine learning model using a Flask API and connect it with a React-based front-end.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 2. **Model Deployment and Cloud Integration**
+   Deploying the Flask app using **AWS services** (Lambda, CloudFront, and API Gateway) and containerizing the application with **Docker** provided valuable insights into how machine learning models can be operationalized and deployed at scale.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 3. **Working with Flask and REST APIs**
+   I gained experience in creating RESTful APIs using Flask, including handling image data, preprocessing it for the model, and returning real-time results.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 4. **Frontend-Backend Integration**
+   The project taught me how to integrate a React.js front-end with a Flask back-end, ensuring smooth communication between the client and server for real-time inference.
 
-### `npm run eject`
+### 5. **Security Best Practices**
+   While working on this project, I implemented security best practices such as **input validation** and **securing API endpoints**, which are essential for safeguarding machine learning APIs deployed in production.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## How to Run This Project
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Prerequisites
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- **Python 3.x**
+- **Flask**
+- **PyTorch**
+- **React.js**
