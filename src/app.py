@@ -4,6 +4,8 @@ import torch.nn as nn
 import numpy as np
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+import awsgi
+
 
 app = Flask(__name__)
 CORS(app)
@@ -74,14 +76,27 @@ def predict():
 
 # Lambda handler
 def lambda_handler(event, context):
-    # Parse the incoming request
+    if event['httpMethod'] == 'OPTIONS':
+        return {
+            'statusCode': 200,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'POST, OPTIONS',
+                'Access-Control-Allow-Headers': 'Content-Type',
+            },
+            'body': ''
+        }
+
     if event['httpMethod'] == 'POST' and event['path'] == '/predict':
-        return awsgi.response(app, event, context)
+        response = awsgi.response(app, event, context)
+        response['headers']['Access-Control-Allow-Origin'] = '*'
+        return response
     else:
         return {
             'statusCode': 404,
             'body': 'Not Found'
         }
+
 
 
 if __name__ == "__main__":
