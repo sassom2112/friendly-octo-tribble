@@ -41,16 +41,18 @@ function FeatureMap({ data, nativeSize }) {
   );
 }
 
-function ActivationGrid({ maps, nativeSize, title, cols = 8 }) {
-  if (!maps) return null;
+function ActivationGrid({ maps, nativeSize, title, cols = 8, count }) {
+  const total = maps ? maps.length : count;
 
   return (
     <div className="activation-grid">
       <h3 className="section-title">{title}</h3>
       <div className="maps-grid" style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}>
-        {maps.map((map, i) => (
-          <FeatureMap key={i} data={map} nativeSize={nativeSize} />
-        ))}
+        {maps
+          ? maps.map((map, i) => <FeatureMap key={i} data={map} nativeSize={nativeSize} />)
+          : Array.from({ length: total }, (_, i) => (
+              <div key={i} className="feature-map feature-map--placeholder" />
+            ))}
       </div>
     </div>
   );

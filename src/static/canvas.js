@@ -2,7 +2,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import '../../src/DigitRecognizer.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEraser, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { faEraser } from '@fortawesome/free-solid-svg-icons';
 
 function Canvas({ onResult }) {
   const canvasRef = useRef(null);
@@ -144,11 +144,6 @@ function Canvas({ onResult }) {
     onResult(null);
   };
 
-  const submitDrawing = () => {
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    sendToBackend();
-  };
-
   return (
     <div className="action-card">
       <div className="canvas-container">
@@ -170,9 +165,6 @@ function Canvas({ onResult }) {
       <div className="button-group">
         <button onClick={clearCanvas} className="action-button" aria-label="Clear Canvas">
           <FontAwesomeIcon icon={faEraser} /> Clear
-        </button>
-        <button onClick={submitDrawing} className="action-button" aria-label="Submit Drawing">
-          <FontAwesomeIcon icon={faPaperPlane} /> Submit
         </button>
       </div>
     </div>
