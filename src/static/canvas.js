@@ -144,6 +144,11 @@ function Canvas({ onResult }) {
     onResult(null);
   };
 
+  const submitManually = () => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    sendToBackend();
+  };
+
   return (
     <div className="action-card">
       <div className="canvas-container">
@@ -163,6 +168,9 @@ function Canvas({ onResult }) {
         <div className="overlay">Draw a number between 0 and 9</div>
       </div>
       <div className="button-group">
+        <button onClick={submitManually} className="action-button submit-btn" aria-label="Submit Drawing">
+          Submit
+        </button>
         <button onClick={clearCanvas} className="action-button" aria-label="Clear Canvas">
           <FontAwesomeIcon icon={faEraser} /> Clear
         </button>
