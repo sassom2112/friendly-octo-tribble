@@ -2,7 +2,7 @@
   "name": "mnist_digits_rec_app",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://sassom2112.github.io/friendly-octo-tribble",
+  "homepage": "https://digits.di-sasso.com",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
