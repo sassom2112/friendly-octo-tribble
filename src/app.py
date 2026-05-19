@@ -67,13 +67,43 @@ def predict():
     # Convert to torch tensor and add batch and channel dimensions
     input_tensor = torch.from_numpy(pixels).unsqueeze(0)  # Shape: [1, 1, 28, 28]
 
-    # Make prediction
+    # Capture intermediate activations via hooks
+    activations = {}
+
+    def make_hook(name):
+        def hook(module, inp, output):
+            activations[name] = output.detach()
+        return hook
+
+    h1 = model.layers[3].register_forward_hook(make_hook('conv1'))
+    h2 = model.layers[7].register_forward_hook(make_hook('conv2'))
+
     with torch.no_grad():
         outputs = model(input_tensor)
         _, predicted = torch.max(outputs.data, 1)
         prediction = predicted.item()
 
-    return jsonify({'prediction': prediction})
+    h1.remove()
+    h2.remove()
+
+    confidences = torch.softmax(outputs, dim=1).squeeze().tolist()
+
+    def process_maps(act):
+        act = act.squeeze(0).numpy()  # [C, H, W]
+        result = []
+        for i in range(act.shape[0]):
+            fm = act[i]
+            lo, hi = float(fm.min()), float(fm.max())
+            fm = (fm - lo) / (hi - lo) if hi > lo else np.zeros_like(fm)
+            result.append(fm.tolist())
+        return result
+
+    return jsonify({
+        'prediction': prediction,
+        'confidences': confidences,
+        'conv1': process_maps(activations['conv1']),
+        'conv2': process_maps(activations['conv2']),
+    })
 
 # Lambda handler
 def lambda_handler(event, context):
