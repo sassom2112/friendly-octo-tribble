@@ -78,6 +78,25 @@
   text-align: center;
 }
 
+/* Canvas wrapper for overlay positioning */
+.canvas-container {
+  position: relative;
+  display: inline-block;
+}
+
+/* Hint text overlaid on the canvas */
+.overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: rgba(255, 255, 255, 0.2);
+  font-size: 0.9rem;
+  pointer-events: none;
+  text-align: center;
+  user-select: none;
+}
+
 /* Title Styling */
 .app-title {
   color: #ffffff; /* White color */

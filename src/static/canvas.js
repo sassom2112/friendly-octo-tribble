@@ -18,27 +18,44 @@ function Canvas({ setPrediction }) {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   }, []);
 
+  const getPos = (e) => {
+    const canvas = canvasRef.current;
+    if (e.touches) {
+      const rect = canvas.getBoundingClientRect();
+      return {
+        x: e.touches[0].clientX - rect.left,
+        y: e.touches[0].clientY - rect.top,
+      };
+    }
+    return { x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY };
+  };
+
   const startDrawing = (e) => {
+    e.preventDefault();
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
     ctx.lineCap = 'round';
-    ctx.lineWidth = 20; // Increase line width for thicker digits
-    ctx.strokeStyle = 'white'; // Set drawing color to white
+    ctx.lineWidth = 20;
+    ctx.strokeStyle = 'white';
     ctx.beginPath();
-    ctx.moveTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    const { x, y } = getPos(e);
+    ctx.moveTo(x, y);
     setIsDrawing(true);
   };
 
   const draw = (e) => {
+    e.preventDefault();
     if (!isDrawing) return;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
-    ctx.lineTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    const { x, y } = getPos(e);
+    ctx.lineTo(x, y);
     ctx.stroke();
   };
 
-  const stopDrawing = () => {
-    const ctx = canvasRef.current.getContext('2d');
+  const stopDrawing = (e) => {
+    e.preventDefault();
+    const ctx = canvasRef.current.getContext('2d', { willReadFrequently: true });
     ctx.closePath();
     setIsDrawing(false);
   };
@@ -168,7 +185,7 @@ function Canvas({ setPrediction }) {
     }
 
     // Send the flattened grid to the backend
-    fetch('https://ctjpw1q0q3.execute-api.us-west-1.amazonaws.com/prod/predict', {
+    fetch(`${process.env.REACT_APP_API_URL}/predict`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json', // Make sure to send JSON
@@ -200,7 +217,10 @@ function Canvas({ setPrediction }) {
           onMouseDown={startDrawing}
           onMouseMove={draw}
           onMouseUp={stopDrawing}
-          onMouseLeave={stopDrawing} // Handle mouse leaving the canvas
+          onMouseLeave={stopDrawing}
+          onTouchStart={startDrawing}
+          onTouchMove={draw}
+          onTouchEnd={stopDrawing}
         />
         <div className="overlay"> {/* Overlay Text */}
           Draw a number between 0 and 9
